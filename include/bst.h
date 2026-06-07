@@ -2,32 +2,30 @@
 #ifndef INCLUDE_BST_H_
 #define INCLUDE_BST_H_
 
-#include <iostream>
-#include <algorithm>
 #include <vector>
 #include <utility>
+#include <algorithm>
 
 template<typename T>
 class BST {
- public:
+ private:
     struct Node {
         T key;
         int count;
         Node* left;
         Node* right;
-        explicit Node(const T& k) : key(k), count(1), left(nullptr), right(nullptr) {}
+        Node(const T& k) : key(k), count(1), left(nullptr), right(nullptr) {}
     };
 
- private:
     Node* root;
 
-    void addNode(Node*& node, const T& key) {
+    void insert(Node*& node, const T& key) {
         if (node == nullptr) {
             node = new Node(key);
         } else if (key < node->key) {
-            addNode(node->left, key);
+            insert(node->left, key);
         } else if (key > node->key) {
-            addNode(node->right, key);
+            insert(node->right, key);
         } else {
             node->count++;
         }
@@ -35,68 +33,42 @@ class BST {
 
     int getDepth(Node* node) const {
         if (node == nullptr) return 0;
-        int leftDepth = getDepth(node->left);
-        int rightDepth = getDepth(node->right);
-        return 1 + (leftDepth > rightDepth ? leftDepth : rightDepth);
+        int left = getDepth(node->left);
+        int right = getDepth(node->right);
+        return 1 + (left > right ? left : right);
     }
 
-    Node* searchNode(Node* node, const T& key) const {
-        if (node == nullptr || node->key == key) {
-            return node;
-        }
-        if (key < node->key) {
-            return searchNode(node->left, key);
-        } else {
-            return searchNode(node->right, key);
-        }
-    }
-
-    void destroyTree(Node* node) {
+    void toVector(Node* node, std::vector<std::pair<T, int>>& vec) const {
         if (node == nullptr) return;
-        destroyTree(node->left);
-        destroyTree(node->right);
+        toVector(node->left, vec);
+        vec.push_back({node->key, node->count});
+        toVector(node->right, vec);
+    }
+
+    void clear(Node* node) {
+        if (node == nullptr) return;
+        clear(node->left);
+        clear(node->right);
         delete node;
-    }
-
-    void inorderCollect(Node* node, std::vector<std::pair<T, int>>& vec) const {
-        if (node == nullptr) return;
-        inorderCollect(node->left, vec);
-        vec.push_back(std::make_pair(node->key, node->count));
-        inorderCollect(node->right, vec);
     }
 
  public:
     BST() : root(nullptr) {}
 
     ~BST() {
-        destroyTree(root);
+        clear(root);
     }
 
     void insert(const T& key) {
-        if (key.length() > 0) {
-            addNode(root, key);
-        }
+        insert(root, key);
     }
 
     int depth() const {
         return getDepth(root);
     }
 
-    bool search(const T& key) const {
-        return searchNode(root, key) != nullptr;
-    }
-
-    int getCount(const T& key) const {
-        Node* node = searchNode(root, key);
-        return node ? node->count : 0;
-    }
-
-    Node* getRoot() const {
-        return root;
-    }
-
     void inorder(std::vector<std::pair<T, int>>& vec) const {
-        inorderCollect(root, vec);
+        toVector(root, vec);
     }
 };
 
