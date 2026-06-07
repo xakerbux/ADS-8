@@ -3,7 +3,23 @@
 #include <fstream>
 #include <cctype>
 #include <algorithm>
+#include <vector>
+#include <iostream>
 #include "bst.h"
+
+struct WordFreq {
+    std::string word;
+    int count;
+};
+
+void getSortedFreq(BST<std::string>& tree,
+                   std::vector<WordFreq>& freq,
+                   BST<std::string>::Node* node) {
+    if (node == nullptr) return;
+    getSortedFreq(tree, freq, node->left);
+    freq.push_back({node->key, node->count});
+    getSortedFreq(tree, freq, node->right);
+}
 
 void makeTree(BST<std::string>& tree, const char* filename) {
     std::ifstream file(filename);
@@ -30,20 +46,6 @@ void makeTree(BST<std::string>& tree, const char* filename) {
     }
 
     file.close();
-}
-
-struct WordFreq {
-    std::string word;
-    int count;
-};
-
-void getSortedFreq(BST<std::string>& tree,
-                   std::vector<WordFreq>& freq,
-                   typename BST<std::string>::Node* node) {
-    if (node == nullptr) return;
-    getSortedFreq(tree, freq, node->left);
-    freq.push_back({node->key, node->count});
-    getSortedFreq(tree, freq, node->right);
 }
 
 void printFreq(BST<std::string>& tree) {
