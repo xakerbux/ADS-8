@@ -7,20 +7,6 @@
 #include <iostream>
 #include "bst.h"
 
-struct WordFreq {
-    std::string word;
-    int count;
-};
-
-void getSortedFreq(BST<std::string>& tree,
-                   std::vector<WordFreq>& freq,
-                   BST<std::string>::Node* node) {
-    if (node == nullptr) return;
-    getSortedFreq(tree, freq, node->left);
-    freq.push_back({node->key, node->count});
-    getSortedFreq(tree, freq, node->right);
-}
-
 void makeTree(BST<std::string>& tree, const char* filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -54,17 +40,18 @@ void printFreq(BST<std::string>& tree) {
         return;
     }
 
-    std::vector<WordFreq> freq;
-    getSortedFreq(tree, freq, tree.getRoot());
+    std::vector<std::pair<std::string, int>> nodes;
+    tree.inorder(nodes);
 
-    std::sort(freq.begin(), freq.end(),
-              [](const WordFreq& a, const WordFreq& b) {
-                  return a.count > b.count;
+    std::sort(nodes.begin(), nodes.end(),
+              [](const std::pair<std::string, int>& a,
+                 const std::pair<std::string, int>& b) {
+                  return a.second > b.second;
               });
 
-    for (const auto& item : freq) {
-        out << item.word << ": " << item.count << std::endl;
-        std::cout << item.word << ": " << item.count << std::endl;
+    for (const auto& item : nodes) {
+        out << item.first << ": " << item.second << std::endl;
+        std::cout << item.first << ": " << item.second << std::endl;
     }
 
     out.close();
