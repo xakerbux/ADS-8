@@ -4,6 +4,7 @@
 #include <cctype>
 #include <algorithm>
 #include <vector>
+#include <utility>
 #include <iostream>
 #include "bst.h"
 
