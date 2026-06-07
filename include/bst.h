@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <algorithm>
+#include <vector>
+#include <utility>
 
 template<typename T>
 class BST {
@@ -59,7 +61,7 @@ class BST {
     void inorderCollect(Node* node, std::vector<std::pair<T, int>>& vec) const {
         if (node == nullptr) return;
         inorderCollect(node->left, vec);
-        vec.push_back({node->key, node->count});
+        vec.push_back(std::make_pair(node->key, node->count));
         inorderCollect(node->right, vec);
     }
 
