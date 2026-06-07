@@ -4,11 +4,10 @@
 
 #include <vector>
 #include <utility>
-#include <algorithm>
 
 template<typename T>
 class BST {
- private:
+ public:
     struct Node {
         T key;
         int count;
@@ -17,36 +16,44 @@ class BST {
         Node(const T& k) : key(k), count(1), left(nullptr), right(nullptr) {}
     };
 
+ private:
     Node* root;
 
-    void insert(Node*& node, const T& key) {
-        if (node == nullptr) {
+    void add(Node*& node, const T& key) {
+        if (!node) {
             node = new Node(key);
         } else if (key < node->key) {
-            insert(node->left, key);
+            add(node->left, key);
         } else if (key > node->key) {
-            insert(node->right, key);
+            add(node->right, key);
         } else {
             node->count++;
         }
     }
 
-    int getDepth(Node* node) const {
-        if (node == nullptr) return 0;
-        int left = getDepth(node->left);
-        int right = getDepth(node->right);
-        return 1 + (left > right ? left : right);
+    int getDepth(Node* node) {
+        if (!node) return 0;
+        int l = getDepth(node->left);
+        int r = getDepth(node->right);
+        return (l > r ? l : r) + 1;
     }
 
-    void toVector(Node* node, std::vector<std::pair<T, int>>& vec) const {
-        if (node == nullptr) return;
-        toVector(node->left, vec);
-        vec.push_back({node->key, node->count});
-        toVector(node->right, vec);
+    int findCount(Node* node, const T& key) {
+        if (!node) return 0;
+        if (key == node->key) return node->count;
+        if (key < node->key) return findCount(node->left, key);
+        return findCount(node->right, key);
+    }
+
+    void collect(Node* node, std::vector<std::pair<T, int>>& v) {
+        if (!node) return;
+        collect(node->left, v);
+        v.push_back({node->key, node->count});
+        collect(node->right, v);
     }
 
     void clear(Node* node) {
-        if (node == nullptr) return;
+        if (!node) return;
         clear(node->left);
         clear(node->right);
         delete node;
@@ -54,21 +61,14 @@ class BST {
 
  public:
     BST() : root(nullptr) {}
+    ~BST() { clear(root); }
 
-    ~BST() {
-        clear(root);
-    }
-
-    void insert(const T& key) {
-        insert(root, key);
-    }
-
-    int depth() const {
-        return getDepth(root);
-    }
-
-    void inorder(std::vector<std::pair<T, int>>& vec) const {
-        toVector(root, vec);
+    void insert(const T& key) { add(root, key); }
+    int depth() { return getDepth(root); }
+    int search(const T& key) { return findCount(root, key); }
+    
+    void inorder(std::vector<std::pair<T, int>>& v) {
+        collect(root, v);
     }
 };
 
