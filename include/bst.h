@@ -33,7 +33,9 @@ class BST {
 
     int getDepth(Node* node) const {
         if (node == nullptr) return 0;
-        return 1 + std::max(getDepth(node->left), getDepth(node->right));
+        int leftDepth = getDepth(node->left);
+        int rightDepth = getDepth(node->right);
+        return (leftDepth > rightDepth ? leftDepth : rightDepth) + 1;
     }
 
     Node* searchNode(Node* node, const T& key) const {
@@ -52,6 +54,13 @@ class BST {
         destroyTree(node->left);
         destroyTree(node->right);
         delete node;
+    }
+
+    void inorderCollect(Node* node, std::vector<std::pair<T, int>>& vec) const {
+        if (node == nullptr) return;
+        inorderCollect(node->left, vec);
+        vec.push_back({node->key, node->count});
+        inorderCollect(node->right, vec);
     }
 
  public:
@@ -80,6 +89,10 @@ class BST {
 
     Node* getRoot() const {
         return root;
+    }
+
+    void inorder(std::vector<std::pair<T, int>>& vec) const {
+        inorderCollect(root, vec);
     }
 };
 
