@@ -37,7 +37,7 @@ class BST {
         if (node == nullptr) return 0;
         int leftDepth = getDepth(node->left);
         int rightDepth = getDepth(node->right);
-        return (leftDepth > rightDepth ? leftDepth : rightDepth) + 1;
+        return 1 + (leftDepth > rightDepth ? leftDepth : rightDepth);
     }
 
     Node* searchNode(Node* node, const T& key) const {
@@ -73,7 +73,9 @@ class BST {
     }
 
     void insert(const T& key) {
-        addNode(root, key);
+        if (key.length() > 0) {
+            addNode(root, key);
+        }
     }
 
     int depth() const {
