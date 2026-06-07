@@ -7,15 +7,16 @@
 
 template<typename T>
 class BST {
- private:
+ public:
     struct Node {
         T key;
         int count;
         Node* left;
         Node* right;
-        Node(const T& k) : key(k), count(1), left(nullptr), right(nullptr) {}
+        explicit Node(const T& k) : key(k), count(1), left(nullptr), right(nullptr) {}
     };
 
+ private:
     Node* root;
 
     void addNode(Node*& node, const T& key) {
@@ -44,13 +45,6 @@ class BST {
         } else {
             return searchNode(node->right, key);
         }
-    }
-
-    void inorderPrint(Node* node) const {
-        if (node == nullptr) return;
-        inorderPrint(node->left);
-        std::cout << node->key << ": " << node->count << std::endl;
-        inorderPrint(node->right);
     }
 
     void destroyTree(Node* node) {
@@ -84,8 +78,8 @@ class BST {
         return node ? node->count : 0;
     }
 
-    void print() const {
-        inorderPrint(root);
+    Node* getRoot() const {
+        return root;
     }
 };
 
