@@ -4,6 +4,7 @@
 #include <cctype>
 #include <vector>
 #include <algorithm>
+#include <utility>
 #include "bst.h"
 
 void makeTree(BST<std::string>& tree, const char* filename) {
@@ -24,7 +25,7 @@ void makeTree(BST<std::string>& tree, const char* filename) {
             }
         }
     }
-    
+
     if (!word.empty()) tree.insert(word);
     file.close();
 }
@@ -36,15 +37,15 @@ void printFreq(BST<std::string>& tree) {
     std::vector<std::pair<std::string, int>> v;
     tree.inorder(v);
 
-    for (size_t i = 0; i < v.size(); i++) {
-        for (size_t j = i + 1; j < v.size(); j++) {
+    for (size_t i = 0; i < v.size(); ++i) {
+        for (size_t j = i + 1; j < v.size(); ++j) {
             if (v[i].second < v[j].second) {
                 std::swap(v[i], v[j]);
             }
         }
     }
 
-    for (size_t i = 0; i < v.size(); i++) {
+    for (size_t i = 0; i < v.size(); ++i) {
         out << v[i].first << ": " << v[i].second << std::endl;
     }
 
