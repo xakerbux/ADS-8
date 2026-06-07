@@ -11,6 +11,7 @@
 void makeTree(BST<std::string>& tree, const char* filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
+        std::cerr << "Cannot open file: " << filename << std::endl;
         return;
     }
 
@@ -21,14 +22,14 @@ void makeTree(BST<std::string>& tree, const char* filename) {
         if (std::isalpha(static_cast<unsigned char>(ch))) {
             word += std::tolower(static_cast<unsigned char>(ch));
         } else {
-            if (!word.empty()) {
+            if (word.length() > 0) {
                 tree.insert(word);
                 word.clear();
             }
         }
     }
-
-    if (!word.empty()) {
+    
+    if (word.length() > 0) {
         tree.insert(word);
     }
 
