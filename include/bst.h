@@ -13,7 +13,7 @@ class BST {
         int count;
         Node* left;
         Node* right;
-        Node(const T& k) : key(k), count(1), left(nullptr), right(nullptr) {}
+        explicit Node(const T& k) : key(k), count(1), left(nullptr), right(nullptr) {}
     };
 
  private:
@@ -35,7 +35,7 @@ class BST {
         if (!node) return 0;
         int l = getDepth(node->left);
         int r = getDepth(node->right);
-        return (l > r ? l : r) + 1;
+        return 1 + (l > r ? l : r);
     }
 
     int findCount(Node* node, const T& key) {
@@ -64,9 +64,14 @@ class BST {
     ~BST() { clear(root); }
 
     void insert(const T& key) { add(root, key); }
-    int depth() { return getDepth(root); }
+    int depth() {
+        if (!root) return 0;
+        int l = getDepth(root->left);
+        int r = getDepth(root->right);
+        return 1 + (l > r ? l : r);
+    }
     int search(const T& key) { return findCount(root, key); }
-    
+
     void inorder(std::vector<std::pair<T, int>>& v) {
         collect(root, v);
     }
