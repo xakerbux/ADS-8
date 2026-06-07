@@ -64,12 +64,12 @@ class BST {
     ~BST() { clear(root); }
 
     void insert(const T& key) { add(root, key); }
+    
     int depth() {
-        if (!root) return 0;
-        int l = getDepth(root->left);
-        int r = getDepth(root->right);
-        return 1 + (l > r ? l : r);
+        int d = getDepth(root);
+        return d > 0 ? d - 1 : 0;
     }
+    
     int search(const T& key) { return findCount(root, key); }
 
     void inorder(std::vector<std::pair<T, int>>& v) {
